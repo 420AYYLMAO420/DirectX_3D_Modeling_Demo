@@ -25,7 +25,7 @@ Window::Window(const wchar_t* title, unsigned int width, unsigned int height)
 	SecureZeroMemory(&WinClass, sizeof(WNDCLASSEX));
 	SecureZeroMemory(&Message, sizeof(MSG));
 	WinClass.cbSize = sizeof(WNDCLASSEX);
-	WinClass.style = CS_OWNDC;
+	WinClass.style = CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
 	WinClass.lpfnWndProc = WindowProc;
 	WinClass.cbClsExtra = NULL;
 	WinClass.cbWndExtra = NULL;

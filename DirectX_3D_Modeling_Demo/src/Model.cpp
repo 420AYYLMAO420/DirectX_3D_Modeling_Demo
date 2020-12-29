@@ -13,7 +13,7 @@ std::string directory;
 Model::Model(const std::string& path, Shader* shader)
 :ShaderObject(shader) {
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
+	const aiScene* scene = importer.ReadFile(path, aiProcess_FlipUVs | aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_CalcTangentSpace);
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
     {
         OutputDebugStringA(importer.GetErrorString());
@@ -23,8 +23,8 @@ Model::Model(const std::string& path, Shader* shader)
 
     for (UINT meshIndex = 0; meshIndex < scene->mNumMeshes; meshIndex++) {
         const aiMesh* mesh = scene->mMeshes[meshIndex];
-        std::vector<VERTEX> Vertices;
-        std::vector<UINT> Indices;
+        std::vector<VERTEX> vertices;
+        std::vector<UINT> indices;
 
         for (UINT vert = 0; vert < mesh->mNumVertices; vert++) {
             VERTEX vertex = {};
@@ -53,14 +53,14 @@ Model::Model(const std::string& path, Shader* shader)
                 }
             }
 
-            Vertices.push_back(vertex);
+            vertices.push_back(vertex);
         }
 
         for (UINT faceIndex = 0; faceIndex < mesh->mNumFaces; faceIndex++)
         {
-            const aiFace face = mesh->mFaces[faceIndex];
+            const aiFace& face = mesh->mFaces[faceIndex];
             for (UINT indIndex = 0; indIndex < face.mNumIndices; indIndex++)
-                Indices.push_back(face.mIndices[indIndex]);
+                indices.push_back(face.mIndices[indIndex]);
         }
 
         std::vector<std::shared_ptr<Texture>> textures;
@@ -71,11 +71,11 @@ Model::Model(const std::string& path, Shader* shader)
                 textures.push_back(diffuse);
             if(std::shared_ptr<Texture> specular = GetTexture(material, aiTextureType_SPECULAR, 1))
                 textures.push_back(specular);
-            if (std::shared_ptr<Texture> normal = GetTexture(material, aiTextureType_NORMALS, 2))
+            if (std::shared_ptr<Texture> normal = GetTexture(material, aiTextureType_HEIGHT, 2))
                 textures.push_back(normal);
         }
 
-        Meshes.push_back(std::make_shared<Mesh>(Vertices, Indices, textures, ShaderObject));
+        Meshes.push_back(std::make_shared<Mesh>(vertices, indices, textures, ShaderObject));
     }
 }
 
@@ -90,15 +90,13 @@ void Model::Make(ID3D11Device* Device)
         mesh->Make(Device);
 }
 
-#define PADDING 4
-
 std::shared_ptr<Texture> Model::GetTexture(const aiMaterial* mat, const aiTextureType type, const UINT slot)
 {
     aiString texName;
     mat->GetTexture(type, 0, &texName);
     if (texName.length == NULL)
         return nullptr;
-    std::string texPath = std::string(texName.C_Str() + PADDING, texName.C_Str() + texName.length + PADDING);
+    std::string texPath = std::string(texName.C_Str());
     texPath = directory + '/' + texPath;
     return std::make_shared<Texture>(texPath.c_str(), slot);
 }

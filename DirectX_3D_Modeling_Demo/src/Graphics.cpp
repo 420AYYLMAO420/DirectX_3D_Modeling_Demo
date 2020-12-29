@@ -54,9 +54,8 @@ Graphics::Graphics(HWND hwnd, unsigned int width, unsigned int height)
 
     Resources.insert({ "Nanosuit Shader", std::make_shared<Shader>(L"shaders/ModelVShader.cso", L"shaders/ModelPShader.cso") });
     GPU->Make(GetResource<Shader>("Nanosuit Shader"));
-    GPU->Bind(GetResource<Shader>("Nanosuit Shader"));
 
-    Resources.insert({ "Nanosuit", std::make_shared<Model>("res/Models/nano_textured/nanosuit.obj", GetResource<Shader>("Nanosuit Shader"))});
+    Resources.insert({ "Nanosuit", std::make_shared<Model>("res/Models/planet/planet.obj", GetResource<Shader>("Nanosuit Shader"))});
     GPU->Make(GetResource<Model>("Nanosuit"));
 
     Resources.insert({ "Light Shader", std::make_shared<Shader>(L"shaders/CubeVShader.cso", L"shaders/CubePShader.cso") });
@@ -67,7 +66,6 @@ Graphics::Graphics(HWND hwnd, unsigned int width, unsigned int height)
 
     Resources.insert({ "Sampler", std::make_shared<Sampler>() });
     GPU->Make(GetResource<Sampler>("Sampler"));
-    GPU->Bind(GetResource<Sampler>("Sampler"));
 
     Timer = std::make_unique<Time>();
     Timer->Start();
