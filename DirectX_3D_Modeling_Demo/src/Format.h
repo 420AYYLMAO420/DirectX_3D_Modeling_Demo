@@ -26,4 +26,17 @@ public:
 		return size / sizeof(T);
 	}
 
+	static UINT GetNumComponents(const DXGI_FORMAT format) {
+		UINT numComponents = 0;
+		switch (format) {
+		case DXGI_FORMAT_B8G8R8A8_UNORM:
+			numComponents = 4;
+			break;
+		case DXGI_FORMAT_R8_UNORM:
+			numComponents = 1;
+			break;
+		}
+		return numComponents;
+	}
+
 };

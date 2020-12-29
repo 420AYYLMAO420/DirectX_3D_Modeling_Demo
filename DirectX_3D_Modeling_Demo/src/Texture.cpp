@@ -31,7 +31,7 @@ void Texture::Make(ID3D11Device* Device)
 
 	SecureZeroMemory(&SubResData, sizeof(D3D11_SUBRESOURCE_DATA));
 	SubResData.pSysMem = scratch.GetPixels();
-	SubResData.SysMemPitch = sizeof(UINT32) * scratch.GetMetadata().width;
+	SubResData.SysMemPitch = Format::GetNumComponents(TextureDesc.Format) * scratch.GetMetadata().width;
 	Device->CreateTexture2D(&TextureDesc, &SubResData, TextureObject.GetAddressOf());
 
 	SecureZeroMemory(&TextureViewDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
