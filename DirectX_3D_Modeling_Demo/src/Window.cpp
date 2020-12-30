@@ -1,5 +1,6 @@
 #include "Window.h"
 #include "GUI.h"
+#include "ico_res.h"
 
 #include "imgui/imgui_impl_win32.h"
 
@@ -30,7 +31,8 @@ Window::Window(const wchar_t* title, unsigned int width, unsigned int height)
 	WinClass.cbClsExtra = NULL;
 	WinClass.cbWndExtra = NULL;
 	WinClass.hInstance = GetModuleHandle(nullptr);
-	WinClass.hIcon = nullptr;
+	WinClass.hIcon = static_cast<HICON>(LoadImage(WinClass.hInstance, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 64, 64, NULL));
+	WinClass.hIconSm = static_cast<HICON>(LoadImage(WinClass.hInstance, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 32, 32, NULL));
 	WinClass.hCursor = nullptr;
 	WinClass.hbrBackground = nullptr;
 	WinClass.lpszMenuName = nullptr;
